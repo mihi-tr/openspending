@@ -150,15 +150,7 @@ class Dataset(db.Model):
         than SQL auto-increment because it is stable across mutltiple
         loads and thus creates stable URIs for entries.
         """
-        uniques = [self.name]
-        for field in self.fields:
-            if not field.key:
-                continue
-            obj = data.get(field.name)
-            if isinstance(obj, dict):
-                obj = obj.get('name', obj.get('id'))
-            uniques.append(obj)
-        return hash_values(uniques)
+        return self.cube._make_key(data)
 
     def load(self, data):
         """ Handle a single entry of data in the mapping source format,
