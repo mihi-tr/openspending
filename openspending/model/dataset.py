@@ -80,7 +80,7 @@ class Dataset(db.Model):
       try:
         return self._cube
       except AttributeError:  
-        self._cube=Cube(self.data)
+        self._cube=Cube(self.data,self.name)
         return self._cube
       
 

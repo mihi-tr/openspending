@@ -27,16 +27,9 @@ class Cube(TableHandler):
     cube
     """
 
-    def __init__(self, data):
+    def __init__(self, data,name):
         self.data=data
-        self.dataset=self.data.get('dataset')
-        self.name = self.dataset.get('name')
-
-    @property
-    def model(self):
-        model = self.data.copy()
-        model['dataset'] = self.as_dict()
-        return model
+        self.name = name
 
     @property
     def mapping(self):
