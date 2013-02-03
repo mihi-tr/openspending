@@ -53,7 +53,6 @@ class Dataset(db.Model):
 
     def __init__(self, data):
         self.data = data.copy()
-        self.cube= Cube(self.data.copy())
         dataset = self.data['dataset']
         del self.data['dataset']
         self.label = dataset.get('label')
@@ -75,6 +74,15 @@ class Dataset(db.Model):
         model = self.data.copy()
         model['dataset'] = self.as_dict()
         return model
+
+    @property
+    def cube(self):
+      try:
+        return self._cube:
+      except AttributeError:  
+        self._cube=Cube(self.data)
+        return self._cube
+      
 
     @property
     def mapping(self):
