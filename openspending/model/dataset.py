@@ -123,7 +123,7 @@ class Dataset(TableHandler, db.Model):
 
     @property
     def facet_dimensions(self):
-        return [d for d in self.dimensions if d.facet]
+        return self.cube.facet_dimensions()
 
     def init(self):
         """ Create a SQLAlchemy model for the current dataset model,
@@ -145,23 +145,11 @@ class Dataset(TableHandler, db.Model):
         """ Create the tables and columns necessary for this dataset
         to keep data.
         """
-        for field in self.fields:
-            field.generate(self.meta, self.table)
-        for dim in self.dimensions:
-            if isinstance(dim, CompoundDimension):
-                self.table.append_constraint(ForeignKeyConstraint(
-                    [dim.name + '_id'], [dim.table.name + '.id'],
-                    #use_alter=True,
-                    name='fk_' + self.name + '_' + dim.name
-                ))
-        self._generate_table()
-        self._is_generated = True
+        return self.cube.generate()
 
     @property
     def is_generated(self):
-        if self._is_generated is None:
-            self._is_generated = self.table.exists()
-        return self._is_generated
+        return self.cube._is_generated
 
     def commit(self):
         pass
