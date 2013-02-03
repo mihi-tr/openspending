@@ -116,16 +116,7 @@ class Dataset(db.Model):
         without creating the tables and columns. This needs to be
         called both for access to the data and in order to generate
         the model physically. """
-        self.bind = db.engine
-        self.meta = db.MetaData()
-        #self.tx = self.bind.begin()
-        self.meta.bind = db.engine
-
-        self._init_table(self.meta, self.name, 'entry',
-                         id_type=db.Unicode(42))
-        for field in self.fields:
-            field.column = field.init(self.meta, self.table)
-        self.alias = self.table.alias('entry')
+        return self.cube.init()
 
     def generate(self):
         """ Create the tables and columns necessary for this dataset
