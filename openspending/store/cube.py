@@ -29,6 +29,7 @@ class Cube(TableHandler):
     """ 
     The Cube is an object containing all information related to a datasets
     cube
+    """
 
     def __init__(self, data):
         self.name = data.get('name')
