@@ -28,9 +28,9 @@ class Cube(TableHandler):
     """
 
     def __init__(self, data):
+        self.data=data
         self.dataset=self.data.get('dataset')
         self.name = self.dataset.get('name')
-        self.data=data
 
     @property
     def model(self):
@@ -40,6 +40,7 @@ class Cube(TableHandler):
 
     @property
     def mapping(self):
+        
         return self.data.get('mapping', {})
 
     @db.reconstructor
