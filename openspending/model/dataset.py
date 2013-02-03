@@ -6,11 +6,8 @@ data model which it represents, handling the creation, filling and migration of
 the table schema associated with the dataset. As such, it holds the key set
 of logic functions upon which all other queries and loading functions rely.
 """
-import math
 import logging
-from collections import defaultdict
 from datetime import datetime
-from itertools import count
 from sqlalchemy import ForeignKeyConstraint
 
 from openspending.model import meta as db
