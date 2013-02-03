@@ -192,10 +192,7 @@ class Dataset(TableHandler, db.Model):
         """ Drop all tables created as part of this dataset, i.e. by calling
         ``generate()``. This will of course also delete the data itself.
         """
-        self._drop(self.bind)
-        for dimension in self.dimensions:
-            dimension.drop(self.bind)
-        self._is_generated = False
+        self.cube.drop()
 
     def key(self, key):
         """ For a given ``key``, find a column to indentify it in a query.
