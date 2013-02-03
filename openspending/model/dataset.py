@@ -95,22 +95,7 @@ class Dataset(TableHandler, db.Model):
         This is called upon initialization and deserialization of
         the dataset from the SQLAlchemy store.
         """
-        self.dimensions = []
-        self.measures = []
-        for dim, data in self.mapping.items():
-            if data.get('type') == 'measure' or dim == 'amount':
-                self.measures.append(Measure(self, dim, data))
-                continue
-            elif data.get('type') == 'date' or \
-                (dim == 'time' and data.get('datatype') == 'date'):
-                dimension = DateDimension(self, dim, data)
-            elif data.get('type') in ['value', 'attribute']:
-                dimension = AttributeDimension(self, dim, data)
-            else:
-                dimension = CompoundDimension(self, dim, data)
-            self.dimensions.append(dimension)
-        self.init()
-        self._is_generated = None
+        self.cube._load_model()
 
     def __getitem__(self, name):
         """ Access a field (dimension or measure) by name. """
@@ -129,13 +114,12 @@ class Dataset(TableHandler, db.Model):
     @property
     def fields(self):
         """ Both the dimensions and metrics in this dataset. """
-        return self.dimensions + self.measures
+        return self.cube.fields()
 
     @property
     def compounds(self):
         """ Return only compound dimensions. """
-        return filter(lambda d: isinstance(d, CompoundDimension),
-                self.dimensions)
+        return self.cube.compounds()
 
     @property
     def facet_dimensions(self):
