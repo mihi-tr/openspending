@@ -1,10 +1,6 @@
 """
-The ``Dataset`` serves as double function in OpenSpending: on one hand, it is
-a simple domain object that can be created, modified and deleted as any other
-On the other hand it serves as a controller object for the dataset-specific
-data model which it represents, handling the creation, filling and migration of
-the table schema associated with the dataset. As such, it holds the key set
-of logic functions upon which all other queries and loading functions rely.
+The cube is the basic unit of calculating and anayzing data stored in the
+store
 """
 import math
 import logging
@@ -32,7 +28,8 @@ class Cube(TableHandler):
     """
 
     def __init__(self, data):
-        self.name = data.get('name')
+        self.dataset=self.data.get('dataset')
+        self.name = self.dataset.get('name')
         self.data=data
 
     @property

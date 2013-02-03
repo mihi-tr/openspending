@@ -21,6 +21,7 @@ from openspending.model.common import TableHandler, JSONType, \
 from openspending.model.dimension import CompoundDimension, \
         AttributeDimension, DateDimension
 from openspending.model.dimension import Measure
+from openspending.store.cube import Cube
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +60,7 @@ class Dataset(TableHandler, db.Model):
 
     def __init__(self, data):
         self.data = data.copy()
+        self.cube= Cube(self.data.copy())
         dataset = self.data['dataset']
         del self.data['dataset']
         self.label = dataset.get('label')
