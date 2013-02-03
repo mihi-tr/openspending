@@ -198,9 +198,7 @@ class Dataset(TableHandler, db.Model):
         """ Delete all data from the dataset tables but leave the table
         structure intact.
         """
-        for dimension in self.dimensions:
-            dimension.flush(self.bind)
-        self._flush(self.bind)
+        self.cube.flush()
 
     def drop(self):
         """ Drop all tables created as part of this dataset, i.e. by calling
