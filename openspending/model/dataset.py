@@ -74,6 +74,10 @@ class Dataset(db.Model):
         model = self.data.copy()
         model['dataset'] = self.as_dict()
         return model
+    
+    @property
+    def dimensions(self):
+      return self.cube.dimensions
 
     @property
     def cube(self):
