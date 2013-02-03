@@ -16,17 +16,13 @@ from sqlalchemy import ForeignKeyConstraint
 from openspending.model import meta as db
 from openspending.lib.util import hash_values
 
-from openspending.model.common import TableHandler, JSONType, \
-        ALIAS_PLACEHOLDER, decode_row
-from openspending.model.dimension import CompoundDimension, \
-        AttributeDimension, DateDimension
-from openspending.model.dimension import Measure
+from openspending.model.common import JSONType
 from openspending.store.cube import Cube
 
 log = logging.getLogger(__name__)
 
 
-class Dataset(TableHandler, db.Model):
+class Dataset(db.Model):
     """ The dataset is the core entity of any access to data. All
     requests to the actual data store are routed through it, as well
     as data loading and model generation.
