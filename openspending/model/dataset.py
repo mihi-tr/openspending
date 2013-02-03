@@ -147,15 +147,7 @@ class Dataset(db.Model):
         than SQL auto-increment because it is stable across mutltiple
         loads and thus creates stable URIs for entries.
         """
-        uniques = [self.name]
-        for field in self.fields:
-            if not field.key:
-                continue
-            obj = data.get(field.name)
-            if isinstance(obj, dict):
-                obj = obj.get('name', obj.get('id'))
-            uniques.append(obj)
-        return hash_values(uniques)
+        return self.cube._make_key(data)
 
     def load(self, data):
         """ Handle a single entry of data in the mapping source format,
@@ -186,17 +178,9 @@ class Dataset(db.Model):
         or of an attribute of a complex dimension (e.g. ``to.label``). The
         returned key is using an alias, so it can be used in a query
         directly. """
-        attr = None
-        if '.' in key:
-            key, attr = key.split('.', 1)
-        dimension = self[key]
-        if hasattr(dimension, 'alias'):
-            attr_name = dimension[attr].column.name if attr else 'name'
-            return dimension.alias.c[attr_name]
-        return self.alias.c[dimension.column.name]
+        return self.cube.key(key)
 
-    def entries(self, conditions="1=1", order_by=None, limit=None,
-            offset=0, step=10000, fields=None):
+    def entries(self, *args, **kwargs):
         """ Generate a fully denormalized view of the entries on this
         table. This view is nested so that each dimension will be a hash
         of its attributes.
@@ -204,43 +188,7 @@ class Dataset(db.Model):
         This is somewhat similar to the entries collection in the fully
         denormalized schema before OpenSpending 0.11 (MongoDB).
         """
-        if not self.is_generated:
-            return
-
-        if fields is None:
-            fields = self.fields
-
-        joins = self.alias
-        for d in self.dimensions:
-            if d in fields:
-                joins = d.join(joins)
-        selects = [f.selectable for f in fields] + [self.alias.c.id]
-
-        # enforce stable sorting:
-        if order_by is None:
-            order_by = [self.alias.c.id.asc()]
-
-        for i in count():
-            qoffset = offset + (step * i)
-            qlimit = step
-            if limit is not None:
-                qlimit = min(limit - (step * i), step)
-            if qlimit <= 0:
-                break
-
-            query = db.select(selects, conditions, joins, order_by=order_by,
-                              use_labels=True, limit=qlimit, offset=qoffset)
-            rp = self.bind.execute(query)
-
-            first_row = True
-            while True:
-                row = rp.fetchone()
-                if row is None:
-                    if first_row:
-                        return
-                    break
-                first_row = False
-                yield decode_row(row, self)
+        return self.cube.entries(*args, **kwargs)
 
     def aggregate(self, measure='amount', drilldowns=None, cuts=None,
             page=1, pagesize=10000, order=None):
