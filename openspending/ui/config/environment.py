@@ -13,7 +13,8 @@ from migrate.versioning.util import construct_engine
 import pylons
 from webhelpers import markdown
 
-from openspending.model import init_model
+import openspending.model
+import openspending.store
 
 from openspending.ui.config import routing
 from openspending.ui.lib import app_globals
@@ -99,9 +100,16 @@ def load_environment(global_conf, app_conf):
     )
 
     # SQLAlchemy
-    engine = engine_from_config(config, 'openspending.db.')
-    engine = construct_engine(engine)
-    init_model(engine)
+    def init_db_model(config_prefix, init_model):
+        engine = engine_from_config(config, config_prefix)
+        engine = construct_engine(engine)
+        init_model(engine)
+    
+    for config_prefix, init_model in [
+        ('openspending.db.admin.', openspending.model.init_model)
+        ('openspending.db.store.', openspending.store.init_model)
+        ]:
+        init_model(config_prefix, init_model)
 
     # Configure Solr
     import openspending.lib.solr_util as solr
