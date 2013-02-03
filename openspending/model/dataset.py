@@ -192,8 +192,7 @@ class Dataset(db.Model):
         return self.cube.aggregate(*args, **kwargs)
 
     def __repr__(self):
-        return "<Dataset(%s:%s:%s)>" % (self.name, self.dimensions,
-                self.measures)
+        return "<Dataset(%s)>" % (self.name)
 
     def __len__(self): 
         return self.cube.__len__()
