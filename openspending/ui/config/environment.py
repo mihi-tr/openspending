@@ -101,15 +101,16 @@ def load_environment(global_conf, app_conf):
 
     # SQLAlchemy
     def init_db_model(config_prefix, init_model):
+        print config_prefix
         engine = engine_from_config(config, config_prefix)
         engine = construct_engine(engine)
         init_model(engine)
     
     for config_prefix, init_model in [
-        ('openspending.db.admin.', openspending.model.init_model)
+        ('openspending.db.admin.', openspending.model.init_model),
         ('openspending.db.store.', openspending.store.init_model)
         ]:
-        init_model(config_prefix, init_model)
+        init_db_model(config_prefix, init_model)
 
     # Configure Solr
     import openspending.lib.solr_util as solr
