@@ -195,11 +195,8 @@ class Dataset(db.Model):
         return "<Dataset(%s:%s:%s)>" % (self.name, self.dimensions,
                 self.measures)
 
-    def __len__(self):
-        if not self.is_generated:
-            return 0
-        rp = self.bind.execute(self.alias.count())
-        return rp.fetchone()[0]
+    def __len__(self): 
+        return self.cube.__len__()
 
     def as_dict(self):
         return {
