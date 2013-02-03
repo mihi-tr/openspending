@@ -76,6 +76,10 @@ class Dataset(db.Model):
         return model
     
     @property
+    def alias(self):
+      return self.cube.alias
+
+    @property
     def dimensions(self):
       return self.cube.dimensions
 
