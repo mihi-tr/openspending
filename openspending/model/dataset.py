@@ -156,12 +156,7 @@ class Dataset(db.Model):
         """ Handle a single entry of data in the mapping source format,
         i.e. with all needed columns. This will propagate to all dimensions
         and set values as appropriate. """
-        entry = dict()
-        for field in self.fields:
-            field_data = data[field.name]
-            entry.update(field.load(self.bind, field_data))
-        entry['id'] = self._make_key(data)
-        self._upsert(self.bind, entry, ['id'])
+        return self.cube.load(data)
 
     def flush(self):
         """ Delete all data from the dataset tables but leave the table
