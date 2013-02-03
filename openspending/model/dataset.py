@@ -78,7 +78,7 @@ class Dataset(db.Model):
     @property
     def cube(self):
       try:
-        return self._cube:
+        return self._cube
       except AttributeError:  
         self._cube=Cube(self.data)
         return self._cube
