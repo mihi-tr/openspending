@@ -99,17 +99,10 @@ class Dataset(TableHandler, db.Model):
 
     def __getitem__(self, name):
         """ Access a field (dimension or measure) by name. """
-        for field in self.fields:
-            if field.name == name:
-                return field
-        raise KeyError()
+        return self.cube.__getitem__(name)
 
     def __contains__(self, name):
-        try:
-            self[name]
-            return True
-        except KeyError:
-            return False
+        return self.cube.__contains(name)
 
     @property
     def fields(self):
